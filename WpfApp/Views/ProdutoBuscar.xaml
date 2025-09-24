@@ -12,16 +12,16 @@
         <!-- Filtro por Nome -->
         <StackPanel Orientation="Horizontal" Margin="0,2">
             <TextBlock Text="Nome:" Width="50"/>
-            <TextBox Width="200" Text="{Binding FiltroNome}" />
+            <TextBox Width="100" Text="{Binding FiltroNome}" />
         </StackPanel>
 
-        <!-- Filtro por Código -->
+        <!-- Filtro por Código 
         <StackPanel Orientation="Horizontal" Margin="0,2">
             <TextBlock Text="Código:" Width="50"/>
             <TextBox Width="200" Text="{Binding FiltroCodigo}" />
         </StackPanel>
-
-        <!-- Filtro por Faixa de Valor -->
+-->
+        <!-- Filtro por Faixa de Valor 
         <StackPanel Orientation="Horizontal" Margin="0,2">
             <TextBlock Text="Valor entre:" Width="70"/>
             <TextBox Width="80" Text="{Binding FiltroValorMin}" />
@@ -29,6 +29,10 @@
             <TextBox Width="80" Text="{Binding FiltroValorMax}" />
         </StackPanel>
 
+        <StackPanel Margin="40,0,40,30">
+            <DataGrid x:Name="dgrProduto" />
+        </StackPanel>
+        -->
         <!-- Botão para aplicar filtro -->
         <Button Content="Filtrar" Command="{Binding FiltrarCommand}" Width="100" Margin="0,5"/>
     </Grid>
