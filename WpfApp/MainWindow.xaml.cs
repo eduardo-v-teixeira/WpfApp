@@ -23,6 +23,12 @@ namespace WpfApp
             Main.Content = new ProdutoBuscar();
             Main.Content = new PessoaBuscar();
             Main.Content = new PedidoBuscar();
+
+        }
+        private void BtnAbrirProduto_Click(object sender, RoutedEventArgs e)
+        {
+            var produtoView = new ProdutoView();
+            produtoView.Show();
         }
     }
 }
