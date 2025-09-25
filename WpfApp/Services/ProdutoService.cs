@@ -1,29 +1,36 @@
-﻿using Newtonsoft.Json; 
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
+using System.Text.Json;
 using WpfApp.Models;
-
-
-//Já temos o arquivo JSON vazio (a base de dados).
-// O ProductService já sabe manipular ele.
-// Quando adicionarmos produtos pela tela, eles vão direto para o produtos.json.
 
 namespace WpfApp.Services
 {
-    //Foi realizado Ações: Incluir, Editar, Salvar, Excluir
     public class ProdutoService
-    {   //Ele já está preparado para ler e gravar automaticamente nesse JSON sempre que usar Add, Update ou Delete.
-        private const string FilePath = "Data/produtos.json"; 
+    {
+        private readonly string dataDirectory;
+        private readonly string filePath;
         private List<Produto> produtos;
 
         public ProdutoService()
         {
-            if (File.Exists(FilePath))
+            dataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
+            filePath = Path.Combine(dataDirectory, "produtos.json");
+
+            // garante que a pasta existe
+            if (!Directory.Exists(dataDirectory))
+                Directory.CreateDirectory(dataDirectory);
+
+            Load();
+        }
+
+        private void Load()
+        {
+            if (File.Exists(filePath))
             {
-                var json = File.ReadAllText(FilePath);
-                produtos = JsonConvert.DeserializeObject<List<Produto>>(json) ?? new List<Produto>();
+                var json = File.ReadAllText(filePath);
+                produtos = JsonSerializer.Deserialize<List<Produto>>(json) ?? new List<Produto>();
             }
             else
             {
@@ -31,12 +38,16 @@ namespace WpfApp.Services
             }
         }
 
+        private void SaveChanges()
+        {
+            var json = JsonSerializer.Serialize(produtos, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(filePath, json);
+        }
+
         public List<Produto> GetAll() => produtos;
 
         public void Add(Produto produto)
         {
-            // gerar Id automático
-            produto.Id = Guid.NewGuid();
             produtos.Add(produto);
             SaveChanges();
         }
@@ -62,13 +73,5 @@ namespace WpfApp.Services
                 SaveChanges();
             }
         }
-
-        private void SaveChanges()
-        {
-            var json = JsonConvert.SerializeObject(produtos, Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(FilePath, json);
-        }
-
-        
     }
 }

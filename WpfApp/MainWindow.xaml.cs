@@ -20,15 +20,18 @@ namespace WpfApp
         public MainWindow()
         {
             InitializeComponent();
-            Main.Content = new ProdutoBuscar();
-            Main.Content = new PessoaBuscar();
-            Main.Content = new PedidoBuscar();
+            Main.Content = new ProdutoWindow();
+            Main.Content = new ();
+            Main.Content = new ();
 
         }
+        //Botão para abrir a janela de produtos
         private void BtnAbrirProduto_Click(object sender, RoutedEventArgs e)
         {
-            var produtoView = new ProdutoView();
+            var produtoView = new ProdutoWindow();
             produtoView.Show();
         }
+
+
     }
 }

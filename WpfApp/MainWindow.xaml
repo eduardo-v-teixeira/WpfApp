@@ -6,11 +6,16 @@
         xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen">
-    <StackPanel>
-        <Frame x:Name="Main" NavigationUIVisibility="Hidden"/>
 
-    </StackPanel>
+    <Grid>
+        <!-- Frame para navegação -->
+        <Frame x:Name="Main" NavigationUIVisibility="Hidden" />
 
+        <!-- Botão central -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Content="Abrir Produtos"
+                    Width="150" Height="40"
+                    Click="BtnAbrirProduto_Click"/>
+        </StackPanel>
+    </Grid>
 </Window>
-<!-- Qualquer page vai ter que passar por aqui/encaixar 
-    as pages serão renderizadas dentro da Window-->
