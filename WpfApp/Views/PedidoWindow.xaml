@@ -19,7 +19,7 @@
             </StackPanel>
 
             <!-- Grid de Produtos do Pedido -->
-            <DataGrid x:Name="dgItensPedido" AutoGenerateColumns="False" Height="200" Margin="0,0,0,10">
+            <DataGrid x:Name="dgItensPedido" AutoGenerateColumns="False" Height="200" Margin="0,0,0,10" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Produto" Binding="{Binding NomeProduto}" Width="*"/>
                     <DataGridTextColumn Header="Valor Unit." Binding="{Binding ValorUnitario, StringFormat=C}" Width="*"/>
