@@ -18,7 +18,7 @@ namespace WpfApp.Services
             dataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
             filePath = Path.Combine(dataDirectory, "produtos.json");
 
-            // garante que a pasta existe
+            
             if (!Directory.Exists(dataDirectory))
                 Directory.CreateDirectory(dataDirectory);
 
