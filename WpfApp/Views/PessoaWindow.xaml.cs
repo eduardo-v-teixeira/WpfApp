@@ -68,17 +68,28 @@ namespace WpfApp.Views
 
         private void BtnIncluir_Click(object sender, RoutedEventArgs e)
         {
-            var novaPessoa = new Pessoa
+            try
             {
-                Nome = txtNome.Text,
-                CPF = txtCPF.Text,
-                Endereco = txtEndereco.Text
-            };
+                var novaPessoa = new Pessoa
+                {
+                    Nome = txtNome.Text,
+                    CPF = txtCPF.Text,
+                    Endereco = txtEndereco.Text
+                };
 
-            pessoaService.Add(novaPessoa);
-            CarregarPessoas();
-            LimparCampos();
-        }
+                pessoaService.Add(novaPessoa);
+                CarregarPessoas();
+                LimparCampos();
+            }
+            catch(ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Erro de VAlidação", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro inesperado: " + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+         }
 
         private void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
