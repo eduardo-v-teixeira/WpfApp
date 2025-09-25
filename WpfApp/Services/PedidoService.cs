@@ -12,8 +12,7 @@ namespace WpfApp.Services
         private readonly string FilePath;
         private List<Pedido> pedidos;
 
-
-        public PedidoService() // construtor é execultado quando a classe é instanciada
+        public PedidoService()
         {
             var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
             var assemblyDirectory = Path.GetDirectoryName(assemblyLocation) ?? "";
@@ -36,6 +35,7 @@ namespace WpfApp.Services
                 pedidos = new List<Pedido>();
                 SaveChanges();
             }
+        
 
         }
         // Salva os pedidos no arquivo JSON

@@ -1,40 +1,39 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using WpfApp.Models;
 
 namespace WpfApp.Services
 {
     public class ProdutoService
     {
-        private readonly string dataDirectory;
-        private readonly string filePath;
+        private readonly string FilePath;
         private List<Produto> produtos;
 
         public ProdutoService()
         {
-            dataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
-            filePath = Path.Combine(dataDirectory, "produtos.json");
+            var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var assemblyDirectory = Path.GetDirectoryName(assemblyLocation) ?? "";
+            var projectDirectory = Path.GetFullPath(Path.Combine(assemblyDirectory, "..", "..", ".."));
+            var dataDirectory = Path.Combine(projectDirectory, "Data");
+            FilePath = Path.Combine(dataDirectory, "Produto.json");
 
-            
             if (!Directory.Exists(dataDirectory))
-                Directory.CreateDirectory(dataDirectory);
-
-            Load();
-        }
-
-        private void Load()
-        {
-            if (File.Exists(filePath))
             {
-                var json = File.ReadAllText(filePath);
-                produtos = JsonSerializer.Deserialize<List<Produto>>(json) ?? new List<Produto>();
+                Directory.CreateDirectory(dataDirectory);
+            }
+
+            if (File.Exists(FilePath))
+            {
+                var json = File.ReadAllText(FilePath);
+                produtos = JsonConvert.DeserializeObject<List<Produto>>(json) ?? new List<Produto>();
             }
             else
             {
                 produtos = new List<Produto>();
+                SaveChanges();
             }
         }
 
