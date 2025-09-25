@@ -37,16 +37,11 @@ namespace WpfApp.Services
             }
         }
 
-        private void SaveChanges()
-        {
-            var json = JsonSerializer.Serialize(produtos, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(filePath, json);
-        }
-
         public List<Produto> GetAll() => produtos;
 
         public void Add(Produto produto)
         {
+            produto.Id = Guid.NewGuid();
             produtos.Add(produto);
             SaveChanges();
         }
@@ -72,5 +67,13 @@ namespace WpfApp.Services
                 SaveChanges();
             }
         }
+
+        private void SaveChanges()
+        {
+            var json = JsonConvert.SerializeObject(produtos, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(FilePath, json);
+        }
+
+
     }
 }

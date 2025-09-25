@@ -1,106 +1,133 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
+using System.Windows;
+using System.Windows.Controls;
 using WpfApp.Models;
 using WpfApp.Services;
 
-namespace WpfApp.ViewModels
+namespace WpfApp.Views
 {
-    public class PedidoViewModel : INotifyPropertyChanged
+    public partial class PedidoWindow : Window
     {
-        private readonly PedidoService pedidoService;
-        private readonly PessoaService pessoaService;
         private readonly ProdutoService produtoService;
+        private readonly PedidoService pedidoService;
+        private readonly Pessoa pessoa;
+        private List<ItemPedido> itensPedido;
 
-        public PedidoViewModel()
+        public PedidoWindow(Pessoa pessoa)
         {
-            pedidoService = new PedidoService();
-            pessoaService = new PessoaService();
+            InitializeComponent();
+            this.pessoa = pessoa;
             produtoService = new ProdutoService();
+            pedidoService = new PedidoService();
+            itensPedido = new List<ItemPedido>();
 
-            Pessoas = new ObservableCollection<Pessoa>(pessoaService.GetAll());
-            Produtos = new ObservableCollection<Produto>(produtoService.GetAll());
-            ItensPedido = new ObservableCollection<ItemPedido>();
-
-            AdicionarProdutoCommand = new RelayCommand(AdicionarProduto);
-            FinalizarPedidoCommand = new RelayCommand(FinalizarPedido);
+            InicializarTela();
         }
 
-        private Pessoa pessoaSelecionada;
-        public Pessoa PessoaSelecionada
+        private void InicializarTela()
         {
-            get => pessoaSelecionada;
-            set { pessoaSelecionada = value; OnPropertyChanged(nameof(PessoaSelecionada)); }
+            lblPessoa.Content = $"{pessoa.Nome} - {pessoa.CPF}";
+            cbProdutos.ItemsSource = produtoService.GetAll();
+            cbFormaPagamento.SelectedIndex = 0;
+            AtualizarGrid();
         }
 
-        private Produto produtoSelecionado;
-        public Produto ProdutoSelecionado
+        private void BtnAdicionarProduto_Click(object sender, RoutedEventArgs e)
         {
-            get => produtoSelecionado;
-            set { produtoSelecionado = value; OnPropertyChanged(nameof(ProdutoSelecionado)); }
-        }
-
-        private int quantidade = 1;
-        public int Quantidade
-        {
-            get => quantidade;
-            set { quantidade = value; OnPropertyChanged(nameof(Quantidade)); }
-        }
-
-        public ObservableCollection<Pessoa> Pessoas { get; set; }
-        public ObservableCollection<Produto> Produtos { get; set; }
-        public ObservableCollection<ItemPedido> ItensPedido { get; set; }
-
-        public decimal ValorTotal => ItensPedido.Sum(i => i.Subtotal);
-
-        // Comandos
-        public ICommand AdicionarProdutoCommand { get; set; }
-        public ICommand FinalizarPedidoCommand { get; set; }
-
-        private void AdicionarProduto()
-        {
-            if (ProdutoSelecionado != null && Quantidade > 0)
+            if (cbProdutos.SelectedItem is Produto produto && int.TryParse(txtQuantidade.Text, out int quantidade) && quantidade > 0)
             {
-                var item = new ItemPedido
+                var itemExistente = itensPedido.FirstOrDefault(i => i.ProdutoId == produto.Id);
+
+                if (itemExistente != null)
                 {
-                    Produto = ProdutoSelecionado,
-                    Quantidade = Quantidade
-                };
-                ItensPedido.Add(item);
-                OnPropertyChanged(nameof(ValorTotal));
+                    itemExistente.Quantidade += quantidade;
+                }
+                else
+                {
+                    var novoItem = new ItemPedido
+                    {
+                        ProdutoId = produto.Id,
+                        NomeProduto = produto.Nome,
+                        ValorUnitario = produto.Valor,
+                        Quantidade = quantidade
+                    };
+                    itensPedido.Add(novoItem);
+                }
+
+                txtQuantidade.Text = "";
+                AtualizarGrid();
+                AtualizarTotal();
+            }
+            else
+            {
+                MessageBox.Show("Selecione um produto e informe uma quantidade válida!");
             }
         }
 
-        private void FinalizarPedido()
+        private void BtnRemoverItem_Click(object sender, RoutedEventArgs e)
         {
-            if (PessoaSelecionada == null || !ItensPedido.Any()) return;
-
-            var pedido = new Pedido
+            if (dgItensPedido.SelectedItem is ItemPedido item)
             {
-                Pessoa = PessoaSelecionada,
-                Produtos = ItensPedido.ToList(),
-                Status = Status.Pendente,
-                DataVenda = DateTime.Now,
-                FormaPagamento = "Dinheiro" 
-            };
-
-            pedidoService.AddPedido(pedido);
-
-            // Limpar tela
-            ItensPedido.Clear();
-            PessoaSelecionada = null;
-            ProdutoSelecionado = null;
-            Quantidade = 1;
-            OnPropertyChanged(nameof(ValorTotal));
+                itensPedido.Remove(item);
+                AtualizarGrid();
+                AtualizarTotal();
+            }
+            else
+            {
+                MessageBox.Show("Selecione um item para remover!");
+            }
         }
 
-        // INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+        private void BtnFinalizarPedido_Click(object sender, RoutedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (!itensPedido.Any())
+            {
+                MessageBox.Show("Adicione pelo menos um produto ao pedido!");
+                return;
+            }
+
+            if (cbFormaPagamento.SelectedItem is ComboBoxItem formaPagamento)
+            {
+                var novoPedido = new Pedido
+                {
+                    PessoaId = pessoa.Id,
+                    Produtos = new List<ItemPedido>(itensPedido),
+                    FormaPagamento = formaPagamento.Content.ToString() ?? "",
+                    Status = "Pendente"
+                };
+
+                pedidoService.Add(novoPedido);
+                MessageBox.Show("Pedido finalizado com sucesso!");
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Selecione uma forma de pagamento!");
+            }
+        }
+
+        private void BtnCancelar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BtnVoltar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void AtualizarGrid()
+        {
+            dgItensPedido.ItemsSource = null;
+            dgItensPedido.ItemsSource = itensPedido;
+        }
+
+        private void AtualizarTotal()
+        {
+            var total = itensPedido.Sum(i => i.ValorTotal);
+            lblTotal.Content = total.ToString("C");
         }
     }
 }

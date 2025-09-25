@@ -37,35 +37,41 @@ namespace WpfApp.Services
             }
         }
 
+        public List<Pessoa> GetAll() => pessoas;
 
-        }
-        // salvar os dados no json
-        public void SaveChanges()
+        public void Add(Pessoa pessoa)
         {
-            var json = JsonConvert.SerializeObject(Pessoa, Formatting.Indented);
-            File.WriteAllText(FilePath, json);
-        }
-
-        public void AddPessoa(Pessoa pessoa)
-        {
+            pessoa.Id = Guid.NewGuid();
             pessoas.Add(pessoa);
             SaveChanges();
         }
-        public void UpdatePessoa(Pessoa pessoa)
+
+        public void Update(Pessoa pessoa)
         {
-            var index = pessoas.FindIndex(p => p.Id == pessoa.Id);
-            if (index >= 0)
+            var existing = pessoas.FirstOrDefault(p => p.Id == pessoa.Id);
+            if (existing != null)
             {
-                pessoas[index] = pessoa;
+                existing.Nome = pessoa.Nome;
+                existing.CPF = pessoa.CPF;
+                existing.Endereco = pessoa.Endereco;
                 SaveChanges();
             }
         }
 
-        public void RemovePessoa(Pessoa pessoa)
+        public void Delete(Guid id)
         {
-            pessoas.RemoveAll(p => p.Id == pessoa.Id);
-            SaveChanges();
+            var pessoa = pessoas.FirstOrDefault(p => p.Id == id);
+            if (pessoa != null)
+            {
+                pessoas.Remove(pessoa);
+                SaveChanges();
+            }
+        }
+
+        private void SaveChanges()
+        {
+            var json = JsonConvert.SerializeObject(pessoas, Formatting.Indented);
+            File.WriteAllText(FilePath, json);
         }
     }
-
 }

@@ -20,18 +20,23 @@ namespace WpfApp
         public MainWindow()
         {
             InitializeComponent();
-            Main.Content = new ProdutoWindow();
-            Main.Content = new ();
-            Main.Content = new ();
-
         }
-        //Botão para abrir a janela de produtos
-        private void BtnAbrirProduto_Click(object sender, RoutedEventArgs e)
+        private void BtnAbrirPessoas_Click(object sender, RoutedEventArgs e)
         {
-            var produtoView = new ProdutoWindow();
-            produtoView.Show();
+            var pessoaWindow = new PessoaWindow();
+            pessoaWindow.Show();
         }
 
+        private void BtnAbrirProdutos_Click(object sender, RoutedEventArgs e)
+        {
+            var produtoWindow = new ProdutoWindow();
+            produtoWindow.Show();
+        }
+
+        private void BtnAbrirPedidos_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Para criar pedidos, acesse o Cadastro de Pessoas e selecione uma pessoa.");
+        }
 
     }
 }

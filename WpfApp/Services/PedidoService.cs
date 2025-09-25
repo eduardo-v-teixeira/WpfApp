@@ -35,54 +35,46 @@ namespace WpfApp.Services
                 pedidos = new List<Pedido>();
                 SaveChanges();
             }
-        
-
-        }
-        // Salva os pedidos no arquivo JSON
-        private void SaveChanges()
-        {
-            var json = JsonConvert.SerializeObject(pedidos, Formatting.Indented);
-            File.WriteAllText(FilePath, json);
         }
 
-        //Criando o Crud de pedidos
-        // Adiciona um novo pedido
-        public void AddPedido(Pedido pedido)
+        public List<Pedido> GetAll() => pedidos;
+
+        public List<Pedido> GetByPessoa(Guid pessoaId) => pedidos.Where(p => p.PessoaId == pessoaId).ToList();
+
+        public void Add(Pedido pedido)
         {
             pedido.Id = Guid.NewGuid();
+            pedido.DataVenda = DateTime.Now;
+            pedido.ValorTotal = pedido.Produtos.Sum(p => p.ValorTotal);
             pedido.Finalizado = true;
             pedidos.Add(pedido);
             SaveChanges();
         }
 
-        // Atualiza um pedido existente
-        public void UpdatePedido(Pedido pedido)
+        public void UpdateStatus(Guid id, string novoStatus)
         {
-            var index = pedidos.FindIndex(p => p.Id == pedido.Id);
-            if (index >= 0)
+            var existing = pedidos.FirstOrDefault(p => p.Id == id);
+            if (existing != null)
             {
-                pedidos[index] = pedido;
+                existing.Status = novoStatus;
                 SaveChanges();
             }
         }
 
-        // Remove um pedido
-        public void RemovePedido(Pedido pedido)
+        public void Delete(Guid id)
         {
-            pedidos.RemoveAll(p => p.Id == pedido.Id);
-            SaveChanges();
+            var pedido = pedidos.FirstOrDefault(p => p.Id == id);
+            if (pedido != null)
+            {
+                pedidos.Remove(pedido);
+                SaveChanges();
+            }
         }
 
-        // Filtrar pedidos por status
-        public List<Pedido> GetByStatus(Status status)
+        private void SaveChanges()
         {
-            return pedidos.Where(p => p.Status == status).ToList();
-        }
-
-        // Filtrar pedidos de uma pessoa específica
-        public List<Pedido> GetByPessoa(Guid pessoaId)
-        {
-            return pedidos.Where(p => p.Pessoa != null && p.Pessoa.Id == pessoaId).ToList();
+            var json = JsonConvert.SerializeObject(pedidos, Formatting.Indented);
+            File.WriteAllText(FilePath, json);
         }
     }
 }

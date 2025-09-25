@@ -1,21 +1,19 @@
 ﻿<Window x:Class="WpfApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Sistema" Height="300" Width="400">
 
     <Grid>
-        <!-- Frame para navegação -->
-        <Frame x:Name="Main" NavigationUIVisibility="Hidden" />
-
-        <!-- Botão central -->
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Content="Abrir Produtos"
-                    Width="150" Height="40"
-                    Click="BtnAbrirProduto_Click"/>
+            <Button Content="Cadastro de Pessoas"
+                    Width="200" Height="50" Margin="10"
+                    Click="BtnAbrirPessoas_Click"/>
+            <Button Content="Cadastro de Produtos"
+                    Width="200" Height="50" Margin="10"
+                    Click="BtnAbrirProdutos_Click"/>
+            <Button Content="Cadastro de Pedidos"
+                    Width="200" Height="50" Margin="10"
+                    Click="BtnAbrirPedidos_Click"/>
         </StackPanel>
     </Grid>
 </Window>

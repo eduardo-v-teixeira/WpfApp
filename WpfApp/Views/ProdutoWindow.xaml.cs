@@ -8,7 +8,7 @@ namespace WpfApp.Views
     public partial class ProdutoWindow : Window
     {
         private readonly ProdutoService produtoService;
-        private Produto produtoSelecionado;
+        private Produto? produtoSelecionado;
 
         public ProdutoWindow()
         {
@@ -19,8 +19,31 @@ namespace WpfApp.Views
 
         private void CarregarProdutos()
         {
+            var produtos = produtoService.GetAll();
+
+            // Aplicar filtros apenas se os controles existirem
+            if (txtFiltroNome != null && !string.IsNullOrEmpty(txtFiltroNome.Text))
+            {
+                produtos = produtos.Where(p => p.Nome.Contains(txtFiltroNome.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (txtFiltroCodigo != null && !string.IsNullOrEmpty(txtFiltroCodigo.Text))
+            {
+                produtos = produtos.Where(p => p.Codigo.Contains(txtFiltroCodigo.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (txtFiltroValorMin != null && decimal.TryParse(txtFiltroValorMin.Text, out decimal valorMin))
+            {
+                produtos = produtos.Where(p => p.Valor >= valorMin).ToList();
+            }
+
+            if (txtFiltroValorMax != null && decimal.TryParse(txtFiltroValorMax.Text, out decimal valorMax))
+            {
+                produtos = produtos.Where(p => p.Valor <= valorMax).ToList();
+            }
+
             dgProdutos.ItemsSource = null;
-            dgProdutos.ItemsSource = produtoService.GetAll();
+            dgProdutos.ItemsSource = produtos;
         }
 
         private void BtnIncluir_Click(object sender, RoutedEventArgs e)
@@ -69,6 +92,26 @@ namespace WpfApp.Views
                 produtoService.Delete(produto.Id);
                 CarregarProdutos();
             }
+        }
+
+        // Eventos de filtro
+        private void FiltroChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            CarregarProdutos();
+        }
+
+        private void BtnLimparFiltros_Click(object sender, RoutedEventArgs e)
+        {
+            txtFiltroNome.Text = "";
+            txtFiltroCodigo.Text = "";
+            txtFiltroValorMin.Text = "";
+            txtFiltroValorMax.Text = "";
+            CarregarProdutos();
+        }
+
+        private void BtnVoltar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
