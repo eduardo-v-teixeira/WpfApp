@@ -63,5 +63,24 @@ namespace WpfApp.Services
                 SaveChanges();
             }
         }
+
+        // Remove um pedido
+        public void RemovePedido(Pedido pedido)
+        {
+            pedidos.RemoveAll(p => p.Id == pedido.Id);
+            SaveChanges();
+        }
+
+        // Filtrar pedidos por status
+        public List<Pedido> GetByStatus(Status status)
+        {
+            return pedidos.Where(p => p.Status == status).ToList();
+        }
+
+        // Filtrar pedidos de uma pessoa específica
+        public List<Pedido> GetByPessoa(Guid pessoaId)
+        {
+            return pedidos.Where(p => p.Pessoa != null && p.Pessoa.Id == pessoaId).ToList();
+        }
     }
 }
