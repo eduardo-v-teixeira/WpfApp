@@ -106,7 +106,7 @@ namespace WpfApp.Services
             int soma = 0;
 
             for (int i = 0; i < 9; i++)
-                soma += int.Parse(tempCpf[i].ToString()) * multiplicador2[i];
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
 
             int resto = soma % 11;
             resto = resto < 2 ? 0 : 11 - resto;
