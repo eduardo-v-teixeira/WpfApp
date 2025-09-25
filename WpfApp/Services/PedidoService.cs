@@ -49,6 +49,8 @@ namespace WpfApp.Services
         // Adiciona um novo pedido
         public void AddPedido(Pedido pedido)
         {
+            pedido.Id = Guid.NewGuid();
+            pedido.Finalizado = true;
             pedidos.Add(pedido);
             SaveChanges();
         }
