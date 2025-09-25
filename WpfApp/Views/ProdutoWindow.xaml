@@ -1,34 +1,27 @@
-﻿<Window x:Class="WpfApp.Views.ProdutoWindow"
+﻿<Window x:Class="WpfApp.Views.ProdutoView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cadastro de Produtos" Height="450" Width="800">
-
+        Title="Cadastro de Produtos" Height="350" Width="400">
     <Grid Margin="10">
         <StackPanel>
-            <!-- Campos -->
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <TextBox x:Name="txtNome" Width="150" Margin="5" ToolTip="Nome"/>
-                <TextBox x:Name="txtCodigo" Width="100" Margin="5" ToolTip="Código"/>
-                <TextBox x:Name="txtValor" Width="100" Margin="5" ToolTip="Valor"/>
+            <TextBlock Text="Cadastro de Produtos" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Nome:"/>
+            <TextBox Text="{Binding Nome}" Margin="0,2"/>
+
+            <TextBlock Text="Código:"/>
+            <TextBox Text="{Binding Codigo}" Margin="0,2"/>
+
+            <TextBlock Text="Valor:"/>
+            <TextBox Text="{Binding Valor}" Margin="0,2"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Button Content="Salvar" Width="80" Command="{Binding SalvarCommand}" Margin="0,0,5,0"/>
+                <Button Content="Excluir" Width="80" Command="{Binding ExcluirCommand}"/>
             </StackPanel>
 
-            <!-- Botões -->
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Button Content="Incluir" Width="80" Margin="5" Click="BtnIncluir_Click"/>
-                <Button Content="Editar" Width="80" Margin="5" Click="BtnEditar_Click"/>
-                <Button Content="Salvar" Width="80" Margin="5" Click="BtnSalvar_Click"/>
-                <Button Content="Excluir" Width="80" Margin="5" Click="BtnExcluir_Click"/>
-            </StackPanel>
-
-            <!-- Grid -->
-            <DataGrid x:Name="dgProdutos" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="Auto"/>
-                    <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*"/>
-                    <DataGridTextColumn Header="Código" Binding="{Binding Codigo}" Width="*"/>
-                    <DataGridTextColumn Header="Valor" Binding="{Binding Valor}" Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <TextBlock Text="Produtos cadastrados:" FontWeight="Bold" Margin="0,10,0,2"/>
+            <ListBox ItemsSource="{Binding Produtos}" DisplayMemberPath="Nome" Height="100"/>
         </StackPanel>
     </Grid>
 </Window>
