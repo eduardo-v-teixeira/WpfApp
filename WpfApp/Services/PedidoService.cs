@@ -36,5 +36,32 @@ namespace WpfApp.Services
                 pedidos = new List<Pedido>();
                 SaveChanges();
             }
+
+        }
+        // Salva os pedidos no arquivo JSON
+        private void SaveChanges()
+        {
+            var json = JsonConvert.SerializeObject(pedidos, Formatting.Indented);
+            File.WriteAllText(FilePath, json);
+        }
+
+        //Criando o Crud de pedidos
+        // Adiciona um novo pedido
+        public void AddPedido(Pedido pedido)
+        {
+            pedidos.Add(pedido);
+            SaveChanges();
+        }
+
+        // Atualiza um pedido existente
+        public void UpdatePedido(Pedido pedido)
+        {
+            var index = pedidos.FindIndex(p => p.Id == pedido.Id);
+            if (index >= 0)
+            {
+                pedidos[index] = pedido;
+                SaveChanges();
+            }
         }
     }
+}
