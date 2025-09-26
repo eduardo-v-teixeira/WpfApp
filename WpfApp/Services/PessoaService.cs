@@ -37,9 +37,9 @@ namespace WpfApp.Services
             }
         }
 
-        public List<Pessoa> GetAll() => pessoas;
+        public List<Pessoa> GetAll() => pessoas; //vai retornar a lista de pessoas
 
-        public void Add(Pessoa pessoa)
+        public void Add(Pessoa pessoa) // vai fazer a verificação do cpf e adicionar a pessoa
         {
             if (!Validar(pessoa.CPF))
             {
@@ -51,7 +51,7 @@ namespace WpfApp.Services
             SaveChanges();
         }
 
-        public void Update(Pessoa pessoa)
+        public void Update(Pessoa pessoa) // vai atualizar as informações da pessoa
         {
             var existing = pessoas.FirstOrDefault(p => p.Id == pessoa.Id);
             if (existing != null)
@@ -65,7 +65,7 @@ namespace WpfApp.Services
 
         public void Delete(Guid id)
         {
-            var pessoa = pessoas.FirstOrDefault(p => p.Id == id);
+            var pessoa = pessoas.FirstOrDefault(p => p.Id == id); //vai deletar a pessoa pelo id
             if (pessoa != null)
             {
                 pessoas.Remove(pessoa);
@@ -75,7 +75,7 @@ namespace WpfApp.Services
 
         private void SaveChanges()
         {
-            var json = JsonConvert.SerializeObject(pessoas, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(pessoas, Formatting.Indented); // vai salvar as mudanças no arquivo json
             File.WriteAllText(FilePath, json);
         }
 

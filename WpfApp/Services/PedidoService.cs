@@ -12,23 +12,28 @@ namespace WpfApp.Services
         private readonly string FilePath;
         private List<Pedido> pedidos;
 
-        public PedidoService()
+        public PedidoService() //objetivo inicializar o FilePath e a lista pedidos
         {
-            var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var assemblyDirectory = Path.GetDirectoryName(assemblyLocation) ?? "";
-            var projectDirectory = Path.GetFullPath(Path.Combine(assemblyDirectory, "..", "..", ".."));
-            var dataDirectory = Path.Combine(projectDirectory, "Data");
+            var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location; //vai inferir onde o assembly está localizado
+            var assemblyDirectory = Path.GetDirectoryName(assemblyLocation) ?? ""; // ter a pasta base da assembly para montar o caminho do projeto
+            var projectDirectory = Path.GetFullPath(Path.Combine(assemblyDirectory, "..", "..", ".."));// vai subir três niveis para chegar na raiz do projeto
+            var dataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WpfApp");
             FilePath = Path.Combine(dataDirectory, "Pedido.json");
 
-            if (!Directory.Exists(dataDirectory))
-            {
-                Directory.CreateDirectory(dataDirectory);
-            }
+            Directory.CreateDirectory(dataDirectory);
 
             if (File.Exists(FilePath))
             {
-                var json = File.ReadAllText(FilePath);
-                pedidos = JsonConvert.DeserializeObject<List<Pedido>>(json) ?? new List<Pedido>();
+                try
+                {
+                    var json = File.ReadAllText(FilePath);
+                    pedidos = JsonConvert.DeserializeObject<List<Pedido>>(json) ?? new List<Pedido>();
+                }
+                catch (Exception ex)
+                {
+                    pedidos = new List<Pedido>();
+                    SaveChanges();
+                }
             }
             else
             {
@@ -37,17 +42,17 @@ namespace WpfApp.Services
             }
         }
 
-        public List<Pedido> GetAll() => pedidos;
+        public List<Pedido> GetAll() => pedidos; // vai retonar todos os pedidos
 
-        public List<Pedido> GetByPessoa(Guid pessoaId) => pedidos.Where(p => p.PessoaId == pessoaId).ToList();
+        public List<Pedido> GetByPessoa(Guid pessoaId) => pedidos.Where(p => p.PessoaId == pessoaId).ToList(); // retonar os pedidos da pessoa
 
-        public void Add(Pedido pedido)
+        public void Add(Pedido pedido) //vai adicionar, caulcularTotal, definir a data e finalizar
         {
-            pedido.Id = Guid.NewGuid();
-            pedido.DataVenda = DateTime.Now;
-            pedido.ValorTotal = pedido.Produtos.Sum(p => p.ValorTotal);
+            pedido.Id = Guid.NewGuid(); 
+            pedido.DataVenda = DateTime.Now; 
+            pedido.ValorTotal = pedido.Produtos.Sum(p => p.ValorTotal); 
             pedido.Finalizado = true;
-            pedidos.Add(pedido);
+            pedidos.Add(pedido); 
             SaveChanges();
         }
 
