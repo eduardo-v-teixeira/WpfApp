@@ -17,23 +17,18 @@ namespace WpfApp.Services
             var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location; //vai inferir onde o assembly está localizado
             var assemblyDirectory = Path.GetDirectoryName(assemblyLocation) ?? ""; // ter a pasta base da assembly para montar o caminho do projeto
             var projectDirectory = Path.GetFullPath(Path.Combine(assemblyDirectory, "..", "..", ".."));// vai subir três niveis para chegar na raiz do projeto
-            var dataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WpfApp");
+            var dataDirectory = Path.Combine(projectDirectory, "Data");
             FilePath = Path.Combine(dataDirectory, "Pedido.json");
 
-            Directory.CreateDirectory(dataDirectory);
+            if (!Directory.Exists(dataDirectory))
+            {
+                Directory.CreateDirectory(dataDirectory);
+            }
 
             if (File.Exists(FilePath))
             {
-                try
-                {
-                    var json = File.ReadAllText(FilePath);
-                    pedidos = JsonConvert.DeserializeObject<List<Pedido>>(json) ?? new List<Pedido>();
-                }
-                catch (Exception ex)
-                {
-                    pedidos = new List<Pedido>();
-                    SaveChanges();
-                }
+                var json = File.ReadAllText(FilePath);
+                pedidos = JsonConvert.DeserializeObject<List<Pedido>>(json) ?? new List<Pedido>();
             }
             else
             {
