@@ -52,10 +52,36 @@ Quando uma pessoa é selecionada, a parte inferior da tela exibe os pedidos vinc
 - ** Os pedidos podem ser filtrados por status, sendo possível visualizar Todos, Pendentes, Pagos ou Entregues.
 Logo abaixo do grid, há botões que permitem alterar o status de um pedido para Pago, Enviado ou Recebido, de acordo com o andamento da operação.
 
+## Instruções Cadastro de Produtos
 
+- ** Na tela de Cadastro de Produtos, na parte superior esquerda, estão disponíveis os filtros de pesquisa por Nome, 
+Código, Valor Mínimo e Valor Máximo, acompanhados de um botão para limpar os filtros aplicados.
 
+- ** Logo abaixo encontra-se a área de cadastro, onde devem ser preenchidos os campos: Nome, Código e Valor.
 
+- ** Por fim, a tela exibe um grid que apresenta os produtos cadastrados, listando as colunas ID, Nome, Código e Valor.
 
+## Instruções Cadastro de Pedidos
 
+- ** Para acessar a tela de Cadastro de Pedidos, é necessário primeiro selecionar uma pessoa dentro da tela de Cadastro de Pessoas.
+Após criar ou selecionar a pessoa desejada, basta clicar em Incluir Pedido, o que direciona para a tela de pedidos.
 
+- ** Na tela de Cadastro de Pedidos, no topo é exibida a pessoa selecionada, mostrando seu Nome e CPF.
 
+- ** Logo abaixo, há a opção de escolha dos produtos cadastrados. Após selecionar um produto e informar a quantidade desejada,
+basta clicar em Adicionar Produto. O item será exibido no grid da tela, contendo as informações de Nome do Produto, 
+Valor Unitário, Quantidade e Total.
+
+- ** Abaixo do grid existe o botão Remover Item, que exige a seleção de um item no grid para ser excluído.
+
+- ** Em seguida, há o campo de seleção da Forma de Pagamento, que pode ser Dinheiro, Cartão ou Boleto, 
+acompanhado do Valor Total calculado automaticamente.
+
+- ** Na parte inferior da tela estão os botões: Voltar, Finalizar Pedido e Cancelar.
+
+⚠️ Atenção:
+
+- Se um produto for adicionado, mas o usuário clicar em Voltar antes de finalizar o pedido, ele será descartado.
+- Se o usuário clicar em Cancelar, o pedido também será cancelado.
+- Após finalizar o pedido, é necessário sair da tela de Cadastro de Pedidos e retornar à tela de Cadastro de Pessoas.
+Somente assim o pedido aparecerá no grid de pedidos vinculados à pessoa selecionada.
