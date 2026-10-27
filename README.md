@@ -1,87 +1,91 @@
-﻿#WpfApp
+# WpfApp
 
-## Projeto de Cadastro e Manipulação de Dados em WPF (.NET Framework 4.6)
+**Português** | [English](README.en.md)
 
-## Funcionalidades Implementadas
+Aplicação desktop em **WPF (.NET 8)** para cadastro de **pessoas**, **produtos** e **pedidos**, com os dados salvos em arquivos JSON. A janela principal ("Sistema") dá acesso às telas de cadastro, e os pedidos são criados a partir da pessoa selecionada.
 
-### 1. Cadastro de Pessoas
-- **Filtros**: Pesquisa por Nome e CPF.
-- **Grid de Registros**: Exibe todas as pessoas cadastradas.
-- **Ações**: Incluir, Editar, Salvar, Excluir pessoas.
-- **Botão "Incluir Pedido"**: Abre a tela de Pedidos, já vinculada à pessoa selecionada.
-- **Grelha de Pedidos da Pessoa**: Exibe os pedidos feitos pela pessoa selecionada, com filtros por status (Entregues, Pagos, Pendentes).
-- **Ações por Pedido**: Permite alterar o status do pedido (Marcar como Pago, Enviado, Recebido).
-- **Validação**: Validação de CPF (formato e dígitos verificadores) e campos obrigatórios.
+## Funcionalidades
 
-### 2. Cadastro de Produtos
-- **Filtros**: Pesquisa por Nome, Código e Faixa de Valor (valor inicial e final).
-- **Grid de Registros**: Exibe todos os produtos cadastrados.
-- **Ações**: Incluir, Editar, Salvar, Excluir produtos.
-- **Validação**: Campos obrigatórios.
+### Cadastro de Pessoas
+- **Filtros** por Nome (sem diferenciar maiúsculas e minúsculas) e CPF, atualizados enquanto o usuário digita, e botão para limpar os filtros.
+- **Grade** com Id, Nome, CPF e Endereço.
+- **Ações**: Incluir, Editar (carrega os dados nos campos), Salvar, Excluir e Voltar.
+- **Validação de CPF** ao incluir uma pessoa: formato, dígitos verificadores e rejeição de CPFs com todos os dígitos iguais. Um CPF inválido exibe um aviso e a pessoa não é salva.
+- **Botão "Incluir Pedido"**: abre a tela de pedidos já vinculada à pessoa selecionada.
+- **Pedidos da pessoa** em uma grade com Data da Venda, Valor Total, Forma de Pagamento e Status, com filtros Todos, Pendentes, Pagos e Entregues (status "Recebido").
+- **Alteração de status** de um pedido finalizado com os botões Marcar como Pago, Marcar como Enviado e Marcar como Recebido.
 
-### 3. Cadastro de Pedidos
-- **Para vincular pedidos a pessoas, tem que estar na tela de Pessoas e clicar no botão "Incluir Pedido".
-- **Seleção de Pessoa**: Permite vincular o pedido a uma pessoa existente.
-- **Adição de Produtos**: Permite adicionar múltiplos produtos ao pedido, especificando a quantidade de cada um.
-- **Cálculo de Valor Total**: Calculado automaticamente conforme os produtos são aumentados/removidos.
-- **Forma de Pagamento**: Seleção entre Dinheiro, Cartão, Boleto.
-- **Botão "Finalizar Pedido"**: Salva o pedido, define o status como "Pendente" e bloqueia a edição.
-- **Descarte de Pedido**: Pedidos não finalizados são descartados ao sair da tela.
+### Cadastro de Produtos
+- **Filtros** por Nome, Código e faixa de valor (mínimo e máximo), atualizados enquanto o usuário digita, e botão para limpar os filtros.
+- **Grade** com Id, Nome, Código e Valor.
+- **Ações**: Incluir, Editar, Salvar, Excluir e Voltar.
 
-## Arquitetura e Tecnologias
-- **Linguagem**: C#
-- **Interface Gráfica**: WPF (Windows Presentation Foundation)
-- **Padrão de Projeto**: MVVM (Model-View-ViewModel) para separação de responsabilidades e testabilidade.
-- **Persistência de Dados**: Arquivos JSON, utilizando a biblioteca `Newtonsoft.Json`.
-- **Manipulação de Dados**: LINQ (Language Integrated Query) para consultas e operações nas coleções de dados.
-- **Organização de Código**: Utilização de `Services` para lógica de negócio e persistência, `ViewModels` para lógica de apresentação, e `Models` para entidades de domínio.
+### Cadastro de Pedidos
+- Aberto pelo botão **Incluir Pedido** na tela de Pessoas; o topo mostra o Nome e o CPF da pessoa.
+- **Adição de produtos** com quantidade; adicionar de novo o mesmo produto soma a quantidade ao item existente.
+- **Remover Item** selecionado na grade de itens (Produto, Valor Unitário, Quantidade e Total).
+- **Valor total** recalculado a cada alteração e exibido em formato de moeda.
+- **Forma de pagamento**: Dinheiro, Cartão ou Boleto.
+- **Finalizar Pedido**: exige pelo menos um item, salva o pedido com status "Pendente", a data atual e o valor total, e fecha a tela.
+- **Voltar** e **Cancelar** fecham a tela sem salvar; itens de um pedido não finalizado são descartados.
 
+## Tecnologias
 
-## Instruções de execução
-- ** Ao iniciar o projeto, a tela principal apresenta três opções: "Cadastro de Pessoas", "Cadastro de Produtos" e "Cadastro de Pedidos".
+- **C#** / **.NET 8** (`net8.0-windows`)
+- **WPF** (XAML com code-behind)
+- **Newtonsoft.Json** 13.0.1 para persistência em arquivos JSON
+- **LINQ** para filtros e totais
 
-## Instruções Cadastro de Pessoas
-- ** Na tela de Cadastro de Pessoas, no canto superior esquerdo estão disponíveis os filtros de pesquisa por Nome e CPF, acompanhados de um botão para limpar os filtros aplicados.
-Logo abaixo encontra-se a área de cadastro, onde devem ser preenchidos os campos: Nome (obrigatório), CPF (obrigatório, com validação) e Endereço (opcional).
+## Estrutura e arquitetura
 
-- ** Ainda nessa tela, estão disponíveis os botões de ação: Voltar para a tela anterior, Incluir, Editar, Salvar, Excluir e Incluir Pedido.
+```
+WpfApp/
+├── WpfApp.sln
+└── WpfApp/
+    ├── Models/       # Pessoa, Produto, Pedido, ItemPedido
+    ├── Services/     # PessoaService, ProdutoService, PedidoService (regras e leitura/gravação dos JSON)
+    ├── Views/        # PessoaWindow, ProdutoWindow, PedidoWindow (XAML + code-behind)
+    ├── ViewModels/   # ProdutoViewModel (ainda não utilizado pelas telas)
+    ├── Data/         # Pessoa.json, Produto.json, Pedido.json
+    ├── App.xaml
+    └── MainWindow.xaml
+```
 
-- ** Abaixo está uma grade com os registros das pessoas cadastradas, mostrando ID, Nome, CPF e Endereço.
-Quando uma pessoa é selecionada, a parte inferior da tela exibe os pedidos a ela, em uma grade que apresenta os campos Dados de Venda, Valor Total, Forma de Pagamento e Status.
+- **Models** representam as entidades.
+- **Services** concentram as regras (validação de CPF, cálculo do total do pedido, alteração de status) e a persistência: cada serviço carrega o seu arquivo JSON ao ser criado e regrava o arquivo a cada alteração.
+- **Views** tratam os eventos da interface no code-behind e chamam os serviços.
 
-- **Os pedidos podem ser filtrados por status, sendo possível visualizar Todos, Pendentes, Pagos ou Entregues.
-Logo abaixo da grade, há botões que permitem alterar o status de um pedido para Pago, Enviado ou Recebido, de acordo com o andamento da operação.
+## Como executar
 
-## Instruções Cadastro de Produtos
+Requisitos: **Windows** e [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0). O Visual Studio 2022 é opcional.
 
-- ** Na tela de Cadastro de Produtos, na parte superior esquerda, estão disponíveis os filtros de pesquisa por Nome,
-Código, Valor Mínimo e Valor Máximo, acompanhados de um botão para limpar os filtros aplicados.
+Na raiz do repositório:
 
-- ** Logo abaixo encontra-se a área de cadastro, onde devem ser preenchidos os campos: Nome, Código e Valor.
+```bash
+dotnet restore WpfApp.sln
+dotnet build WpfApp.sln
+dotnet run --project WpfApp/WpfApp.csproj
+```
 
-- ** Por fim, a tela exibe uma grade que apresenta os produtos cadastrados, listando as colunas ID, Nome, Código e Valor.
+Também é possível abrir `WpfApp.sln` no Visual Studio e executar com F5.
 
-## Instruções Cadastro de Pedidos
+Os dados ficam em `WpfApp/Data/*.json`. Os serviços localizam essa pasta subindo três níveis a partir da pasta do executável, o que corresponde à saída padrão `bin/Debug/net8.0-windows`.
 
-- ** Para acessar a tela de Cadastro de Pedidos, é necessário primeiro selecionar uma pessoa dentro da tela de Cadastro de Pessoas.
-Após criar ou selecionar a pessoa desejada, basta clicar em Incluir Pedido, o que direciona para a tela de pedidos.
+## Como usar
 
-- ** Na tela de Cadastro de Pedidos, no topo é exibido a pessoa selecionada, mostrando seu Nome e CPF.
+1. Na janela principal, escolha **Cadastro de Pessoas** ou **Cadastro de Produtos**. O botão de pedidos apenas orienta a iniciar pela tela de Pessoas.
+2. Cadastre os produtos: preencha Nome, Código e Valor e clique em **Incluir**.
+3. Cadastre uma pessoa: preencha Nome, CPF (validado) e Endereço e clique em **Incluir**.
+4. Selecione a pessoa na grade e clique em **Incluir Pedido**.
+5. Na tela de pedidos, escolha um produto, informe a quantidade e clique em **Adicionar Produto**. Repita para outros itens, escolha a forma de pagamento e clique em **Finalizar Pedido**.
+6. De volta à tela de Pessoas, selecione um pedido finalizado e use os botões **Marcar como Pago**, **Marcar como Enviado** ou **Marcar como Recebido** para atualizar o status.
 
-- **Logo abaixo, há a opção de escolha dos produtos cadastrados. Após selecionar um produto e informar a quantidade desejada,
-basta clicar em Adicionar Produto. O item será exibido na grade da tela, contendo as informações de Nome do Produto,
-Valor Unitário, Quantidade e Total.
+⚠️ **Atenção**
+- Se o usuário clicar em **Voltar** ou **Cancelar** antes de finalizar, o pedido é descartado.
+- Um pedido recém-finalizado só aparece na grade da pessoa depois que a tela de Cadastro de Pessoas é fechada e aberta novamente.
 
-- ** Abaixo da grade existe o botão Remover Item, que exige a seleção de um item na grade para ser excluído.
+## Limitações conhecidas
 
-- ** Em seguida, há o campo de seleção da Forma de Pagamento, que pode ser Dinheiro, Cartão ou Boleto,
-acompanhado do Valor Total calculado automaticamente.
-
-- ** Na parte inferior da tela estão os botões: Voltar, Finalizar Pedido e Cancelar.
-
-⚠️Atenção:
-
-- Se um produto for adicionado, mas o usuário clicar em Voltar antes de finalizar o pedido, ele será descartado.
-- Se o usuário clicar em Cancelar, o pedido também será cancelado.
-- Após finalizar o pedido, é necessário sair da tela de Cadastro de Pedidos e retornar à tela de Cadastro de Pessoas.
-Somente assim o pedido será enviado na grade de pedidos à pessoa selecionada.
+- Apenas o CPF é validado, e só na inclusão. Nome e campos de produto não são obrigatórios; um valor de produto inválido é salvo como 0.
+- Não há banco de dados: os dados ficam nos arquivos JSON locais.
+- Não há testes automatizados.
